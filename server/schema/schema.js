@@ -15,9 +15,9 @@ let books = [
 ];
 
 let authors = [
-  { name: 'Patrick Rothfuss', age:44, id:'1' },
-  { name: 'Brandon Sanderson', age:42, id:'2' },
-  { name: 'Terry Prachett', age:66, id:'3' },
+  { author: 'Patrick Rothfuss', age:44, id:'1' },
+  { author: 'Brandon Sanderson', age:42, id:'2' },
+  { author: 'Terry Prachett', age:66, id:'3' },
 ];
 
 const BookType = new GraphQLObjectType({
@@ -30,11 +30,11 @@ const BookType = new GraphQLObjectType({
 });
 
 const AuthorType = new GraphQLObjectType({
-  name: 'Book',
+  name: 'Author',
   fields: () => ({
-    id: { type: GraphQLString },
+    id: { type: GraphQLID },
     author: { type: GraphQLString },
-    age: { type: GraphQLString }
+    age: { type: GraphQLInt }
   })
 });
 
@@ -47,6 +47,13 @@ const RootQuery = new GraphQLObjectType({
       resolve(parent, args) {
         // code to get data from db / other sources
         return _.find(books, { id: args.id })
+      }
+    },
+    author: {
+      type: AuthorType,
+      args: { id: { type: GraphQLID }},
+      resolve(parent, args) {
+        return _.find(authors, { id: args.id});
       }
     }
   }
