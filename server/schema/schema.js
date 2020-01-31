@@ -9,15 +9,15 @@ const { GraphQLObjectType,
 
 // Dummy Data
 let books = [
-  { name: 'Name of the Wind', genre:'Fantasy', id:'1' },
-  { name: 'The Final Empire', genre:'Fantasy', id:'2' },
-  { name: 'The Long Earth', genre:'Sci-Fi', id:'3' },
+  { name: 'Name of the Wind', genre:'Fantasy', id:'1', authorid:'1' },
+  { name: 'The Final Empire', genre:'Fantasy', id:'2', authorid:'2' },
+  { name: 'The Long Earth', genre:'Sci-Fi', id:'3', authorid:'3' },
 ];
 
 let authors = [
-  { author: 'Patrick Rothfuss', age:44, id:'1' },
-  { author: 'Brandon Sanderson', age:42, id:'2' },
-  { author: 'Terry Prachett', age:66, id:'3' },
+  { name: 'Patrick Rothfuss', age:44, id:'1' },
+  { name: 'Brandon Sanderson', age:42, id:'2' },
+  { name: 'Terry Prachett', age:66, id:'3' },
 ];
 
 const BookType = new GraphQLObjectType({
@@ -25,7 +25,14 @@ const BookType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    genre: { type: GraphQLString }
+    genre: { type: GraphQLString },
+    author: {
+      type: AuthorType,
+      resolve(parent, args) {
+        console.log(parent);
+        return _.find(authors, { id:parent.authorid});
+      }
+    }
   })
 });
 
@@ -33,7 +40,7 @@ const AuthorType = new GraphQLObjectType({
   name: 'Author',
   fields: () => ({
     id: { type: GraphQLID },
-    author: { type: GraphQLString },
+    name: { type: GraphQLString },
     age: { type: GraphQLInt }
   })
 });
@@ -62,3 +69,5 @@ const RootQuery = new GraphQLObjectType({
 module.exports = new GraphQLSchema({
   query: RootQuery
 });
+
+
